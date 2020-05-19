@@ -13,7 +13,7 @@ class SearchScreen extends StatefulWidget {
   @override
   _SearchScreenState createState() => _SearchScreenState();
 }
-String _myName;
+String _myName, _error;
 
 class _SearchScreenState extends State<SearchScreen> {
   DatabaseMethods databaseMethods = new DatabaseMethods();
@@ -51,13 +51,16 @@ class _SearchScreenState extends State<SearchScreen> {
      };
 
      DatabaseMethods().CreateChatRoom(chatRoomId, chatRoomMap);
+
      Navigator.push(context, MaterialPageRoute(
          builder: (Context)=> ConsversationScreen(
            chatRoomId, userName
          )
      ));
    }else{
+
      print("sorry both the are you only");
+
    }
   }
 
@@ -77,7 +80,9 @@ Widget SearchTile({String email, String username}){
           Spacer(),
           InkWell(
             onTap: (){
+
                 createChatRoomStartCon(userName: username);
+
             },
             child: Container(
               padding: EdgeInsets.symmetric(vertical: 16, horizontal:16 ),

@@ -25,36 +25,47 @@ class _SignInState extends State<SignIn> {
   DatabaseMethods databaseMethods = new DatabaseMethods();
   TextEditingController emailTEC = new TextEditingController();
   TextEditingController passwordTEC = new TextEditingController();
-  
   bool isLoading = false;
-  QuerySnapshot snapshotUserInfo;
-  signIn(){
-   if(formkey.currentState.validate()){
-     HelperFunction.saveUserEmail(emailTEC.text);
 
-     databaseMethods.getUserByEmail(emailTEC.text).then((val){
-       snapshotUserInfo = val;
-       HelperFunction.saveUserName(snapshotUserInfo.documents[0].data["name"]);
-     });
+  signIn() async {
+    if (formkey.currentState.validate()) {
+      setState(() {
+        isLoading = true;
+      });
 
-     setState(() {
-       isLoading = true;
-     });
+      await authMethods
+          .signInWithEmailPassword(
+          emailTEC.text, passwordTEC.text)
+          .then((result) async {
+        if (result != null)  {
+          QuerySnapshot userInfoSnapshot =
+          await DatabaseMethods().getUserByEmail(emailTEC.text);
 
-     authMethods.signInWithEmailPassword(emailTEC.text , passwordTEC.text).then((value) {
-       if(value!=null){
-         Navigator.pushReplacement(context, MaterialPageRoute(
-             builder: (context)=> ChatRoom()
-         ));
-       }
-     });
-   } 
+          HelperFunction.saveUserLoggedIn(true);
+          HelperFunction.saveUserName(
+              userInfoSnapshot.documents[0].data["name"]);
+          HelperFunction.saveUserEmail(
+              userInfoSnapshot.documents[0].data["email"]);
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => ChatRoom()));
+        } else {
+          setState(() {
+            isLoading = false;
+            SnackBar(content: Text("Invalid credentials"),);
+          });
+        }
+      });
+    }
   }
   
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      body:  isLoading
+          ? Container(
+        child: Center(child: CircularProgressIndicator()),
+      )
+          :Container(
         alignment: Alignment.bottomCenter,
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 24),
