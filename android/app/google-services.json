@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "923951802718",
+    "firebase_url": "https://let-s-chat-tikamtalreja.firebaseio.com",
+    "project_id": "let-s-chat-tikamtalreja",
+    "storage_bucket": "let-s-chat-tikamtalreja.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:923951802718:android:cc71058f0f86381c8487cf",
+        "android_client_info": {
+          "package_name": "com.example.chatapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "923951802718-i3t8731gb3m97j0k4ucdkpo63gmea2ls.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASMzvC7bybDGqPQf8f1JnxmTKNsTHAQG8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "923951802718-i3t8731gb3m97j0k4ucdkpo63gmea2ls.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
