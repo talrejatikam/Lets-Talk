@@ -20,6 +20,50 @@ class ChatRoom extends StatefulWidget {
 
 class _ChatRoomState extends State<ChatRoom> {
 
+  void _showcontent() {
+    showDialog(
+      context: context, barrierDismissible: false, // user must tap button!
+
+      builder: (BuildContext context) {
+        return new AlertDialog(
+          title: new Text('Log Out'),
+          content: new SingleChildScrollView(
+            child: new ListBody(
+              children: [
+                new Text('Do you really want to Logout?'),
+              ],
+            ),
+          ),
+          actions: [
+            new FlatButton(
+              child: new Text('YES',
+              style: TextStyle(
+                fontSize: 15
+              ),
+              ),
+
+              onPressed: () {
+                authMethods.signOut();
+                Navigator.pushReplacement(context, MaterialPageRoute(
+                    builder: (context)=> authenticate()
+                ));
+              },
+            ),
+            new FlatButton(
+              child: new Text('NO',
+                style: TextStyle(
+                    fontSize: 15
+                ),),
+              onPressed: () {
+
+                Navigator.of(context) .pop();
+              },
+            ),
+          ],
+        );
+      },
+    );}
+
   AuthMethods authMethods = new AuthMethods();
   DatabaseMethods databaseMethods = new DatabaseMethods();
   Stream chatRoomStream;
@@ -64,12 +108,8 @@ class _ChatRoomState extends State<ChatRoom> {
         centerTitle: true,
         actions: <Widget>[
           InkWell(
-            onTap: (){
-              authMethods.signOut();
-              Navigator.pushReplacement(context, MaterialPageRoute(
-                builder: (context)=> authenticate()
-              ));
-            },
+           onTap: _showcontent,
+
             child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Icon(Icons.exit_to_app)),

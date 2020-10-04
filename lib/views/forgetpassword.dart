@@ -4,6 +4,7 @@ import 'package:chatapp/views/signin.dart';
 import 'package:chatapp/widgets/color.dart';
 import 'package:chatapp/widgets/widget.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ForgetPassword extends StatefulWidget {
   final Function toggle;
@@ -64,14 +65,48 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                     width: MediaQuery.of(context).size.width*.3,
                     child: InkWell(
                       onTap: (){
-                       if(formkey.currentState.validate()){
-                        authMethods.resetPassword(emailTEC.text);
-                        Navigator.pushReplacement(context, MaterialPageRoute(
-                          builder: (context) =>  SignIn(widget.toggle)
-                        )); }
-                       else{
-                         SnackBar(content: Text("Please enter a valid email"),);
-                       }
+
+
+                          try{
+                            if(formkey.currentState.validate()) {
+                              authMethods.resetPassword(emailTEC.text);
+                              Navigator.pushReplacement(
+                                  context, MaterialPageRoute(
+                                  builder: (context) => SignIn(widget.toggle)
+                              )
+
+                              );
+                            }
+
+                            else{
+                              SnackBar(content: Text("Please enter a valid email"),);
+//                              Fluttertoast.showToast(
+//                                  msg: "Invalid email address",
+//
+//                                  toastLength: Toast.LENGTH_SHORT,
+//                                  gravity: ToastGravity.SNACKBAR,
+//                                  timeInSecForIosWeb: 1,
+//                                  textColor: secondaryTextColor,
+//                                  backgroundColor: Colors.yellow,
+//
+//                                  fontSize: 16.0
+//                              );
+
+                            }
+
+                          }catch (e){
+                            Fluttertoast.showToast(
+                                 msg: e.toString(),
+
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.SNACKBAR,
+                                timeInSecForIosWeb: 1,
+                                textColor: secondaryTextColor,
+                                backgroundColor: Colors.yellow,
+
+                                fontSize: 16.0
+                            );
+                          }
 
 
                       },

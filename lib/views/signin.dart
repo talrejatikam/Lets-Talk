@@ -7,7 +7,7 @@ import 'package:chatapp/widgets/color.dart';
 import 'package:chatapp/widgets/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
+import 'package:fluttertoast/fluttertoast.dart';
 import 'chatroomscreens.dart';
 import 'forgetpassword.dart';
 
@@ -29,8 +29,10 @@ class _SignInState extends State<SignIn> {
 
   signIn() async {
     if (formkey.currentState.validate()) {
+
       setState(() {
         isLoading = true;
+
       });
 
       await authMethods
@@ -38,6 +40,15 @@ class _SignInState extends State<SignIn> {
           emailTEC.text, passwordTEC.text)
           .then((result) async {
         if (result != null)  {
+          Fluttertoast.showToast(
+              msg: "Login Successful",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 1,
+              textColor: secondaryTextColor,
+              backgroundColor: Colors.yellow,
+              fontSize: 16.0
+          );
           QuerySnapshot userInfoSnapshot =
           await DatabaseMethods().getUserByEmail(emailTEC.text);
 
@@ -49,9 +60,26 @@ class _SignInState extends State<SignIn> {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => ChatRoom()));
         } else {
+          //SnackBar(content: Text("Invalid credentials"),);
+//          Scaffold.of(context).showSnackBar(SnackBar(
+//            content: Text("Invalid credentials"),
+//          ));
+          Fluttertoast.showToast(
+              msg: "Invalid Email Id or password",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.SNACKBAR,
+              timeInSecForIosWeb: 1,
+              textColor: secondaryTextColor,
+              backgroundColor: Colors.yellow,
+               
+              fontSize: 16.0
+          );
+
+
           setState(() {
+
             isLoading = false;
-            SnackBar(content: Text("Invalid credentials"),);
+
           });
         }
       });

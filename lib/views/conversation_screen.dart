@@ -16,10 +16,10 @@ class ConsversationScreen extends StatefulWidget {
 }
 
 class _ConsversationScreenState extends State<ConsversationScreen> {
- TextEditingController messageController = new TextEditingController();
+  TextEditingController messageController = new TextEditingController();
 
- DatabaseMethods databaseMethods = new DatabaseMethods();
- Stream chatMessageStream;
+  DatabaseMethods databaseMethods = new DatabaseMethods();
+  Stream chatMessageStream;
 
   Widget ChatMessageList(){
     return StreamBuilder(
@@ -29,7 +29,7 @@ class _ConsversationScreenState extends State<ConsversationScreen> {
 
             itemCount: snapshot.data.documents.length,
             itemBuilder: (context,index){
-              return MessageTile(snapshot.data.documents[index].data["message"],snapshot.data.documents[index].data["sendBy"]==Constants.myName);
+              return MessageTile(snapshot.data.documents[index].data["message"],snapshot.data.documents[index].data["sendBy"]==Constants.myName,snapshot.data.documents[index].data["time"]);
             }) : Container();
 
       },
@@ -42,6 +42,7 @@ class _ConsversationScreenState extends State<ConsversationScreen> {
         "message": messageController.text,
         "sendBy": Constants.myName,
         "time" : DateTime.now().millisecondsSinceEpoch
+        //"time" : FieldValue.serverTimestamp(),
       };
       databaseMethods.addConservationMessage(widget.chatRoomId, messageMap);
       messageController.text = "";
@@ -49,11 +50,11 @@ class _ConsversationScreenState extends State<ConsversationScreen> {
   }
   @override
   void initState() {
-      databaseMethods.getConservationMessage(widget.chatRoomId).then((value){
+    databaseMethods.getConservationMessage(widget.chatRoomId).then((value){
       setState(() {
         chatMessageStream = value;
       });
-      });
+    });
     super.initState();
   }
 
@@ -68,7 +69,7 @@ class _ConsversationScreenState extends State<ConsversationScreen> {
         child: Stack(
           children: <Widget>[
             Container(
-              color: Colors.white70,
+                color: Colors.white70,
                 padding: EdgeInsets.only(bottom: 50),
                 child: ChatMessageList()),
             Container(
@@ -76,12 +77,12 @@ class _ConsversationScreenState extends State<ConsversationScreen> {
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
-                 // borderRadius: BorderRadius.circular(8.0),
-                  color: Color(0xff3b4473),
+                  // borderRadius: BorderRadius.circular(8.0),
+                    color: Color(0xff3b4473),
 
-                  border: Border(
-                    top: BorderSide(color: Colors.blueAccent[200],)
-                  )
+                    border: Border(
+                        top: BorderSide(color: Colors.blueAccent[200],)
+                    )
                 ),
                 child: Row(
                   children: <Widget>[
@@ -99,7 +100,7 @@ class _ConsversationScreenState extends State<ConsversationScreen> {
                         )),
                     InkWell(
                         onTap: (){
-                         sendMessage();
+                          sendMessage();
                         },
                         child: Icon(Icons.send, color: Colors.white,))
                   ],
@@ -116,33 +117,62 @@ class _ConsversationScreenState extends State<ConsversationScreen> {
 
 class MessageTile extends StatelessWidget {
   final String message;
+  final int time;
   final bool isSendByMe;
-  MessageTile(this.message,this.isSendByMe);
+  MessageTile(this.message,this.isSendByMe,this.time);
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Column(
+      children: <Widget>[
+        Container(
 
-      padding: EdgeInsets.only(left: isSendByMe ?0 :16, right: isSendByMe ?16 :0),
-      width: MediaQuery.of(context).size.width,
-      alignment: isSendByMe ? Alignment.centerRight:Alignment.centerLeft,
-      margin: EdgeInsets.symmetric(vertical: 2),
-      child: Container(
-        decoration: BoxDecoration(
-            color: isSendByMe? Color(0xff7590f0) : Color(0xff3b4473),
-            borderRadius: isSendByMe? BorderRadius.only(
-                topLeft: Radius.circular(16),
-                topRight:  Radius.circular(16),
-                bottomLeft:  Radius.circular(16)) :
-            BorderRadius.only(
-                topLeft: Radius.circular(16),
-                topRight:  Radius.circular(16),
-                bottomRight:  Radius.circular(16))
+          padding: EdgeInsets.only(left: isSendByMe ?0 :16, right: isSendByMe ?16 :0),
+          width: MediaQuery.of(context).size.width,
+          alignment: isSendByMe ? Alignment.centerRight:Alignment.centerLeft,
+          margin: EdgeInsets.symmetric(vertical: 2),
+          child: Container(
+            decoration: BoxDecoration(
+                color: isSendByMe? Color(0xff7590f0) : Color(0xff3b4473),
+                borderRadius: isSendByMe? BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight:  Radius.circular(16),
+                    bottomLeft:  Radius.circular(16)) :
+                BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight:  Radius.circular(16),
+                    bottomRight:  Radius.circular(16))
+            ),
+            padding: EdgeInsets.symmetric(horizontal:20, vertical: 12),
+            child: Text(message, style:TextStyle(
+              fontSize :17, color: isSendByMe ? Colors.black87 : Colors.white,
+            ) ),
+          ),
+        ),        Container(
+
+          padding: EdgeInsets.only(left: isSendByMe ?0 :8, right: isSendByMe ?8 :0),
+          width: MediaQuery.of(context).size.width,
+          alignment: isSendByMe ? Alignment.centerRight:Alignment.centerLeft,
+          margin: EdgeInsets.symmetric(vertical: 0),
+          child: Container(
+            decoration: BoxDecoration(
+              // color: isSendByMe? Color(0xff7590f0) : Color(0xff3b4473),
+                borderRadius: isSendByMe? BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight:  Radius.circular(16),
+                    bottomLeft:  Radius.circular(16)) :
+                BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight:  Radius.circular(16),
+                    bottomRight:  Radius.circular(16))
+            ),
+            padding: EdgeInsets.symmetric(horizontal:12, vertical: 1),
+            child: Text(DateTime.fromMicrosecondsSinceEpoch(time * 1000).toString().substring(11,16), style:TextStyle(
+              fontSize :12, color: isSendByMe ? Colors.black87 : Colors.black87,
+            ) ),
+          ),
         ),
-        padding: EdgeInsets.symmetric(horizontal:20, vertical: 12),
-        child: Text(message, style:TextStyle(
-          fontSize :17, color: isSendByMe ? Colors.black87 : Colors.white,
-        ) ),
-      ),
+
+      ],
     );
   }
 }

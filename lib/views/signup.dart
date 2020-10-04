@@ -4,6 +4,7 @@ import 'package:chatapp/views/chatroomscreens.dart';
 import 'package:chatapp/widgets/color.dart';
 import 'package:chatapp/widgets/widget.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:chatapp/services/auth.dart';
 
 
@@ -37,7 +38,16 @@ class _SignUpState extends State<SignUp> {
       HelperFunction.saveUserEmail(emailTEC.text);
       HelperFunction.saveUserName(userNameTEC.text);
 
+      Fluttertoast.showToast(
+          msg: "Registration Successful!!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.SNACKBAR,
+          timeInSecForIosWeb: 1,
+          textColor: secondaryTextColor,
+          backgroundColor: Colors.yellow,
 
+          fontSize: 16.0
+      );
       setState(() {
       isLoading = true;
     });
